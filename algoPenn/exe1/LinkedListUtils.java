@@ -1,4 +1,5 @@
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /*
@@ -80,15 +81,30 @@ public class LinkedListUtils {
 	public static boolean containsSubsequence(LinkedList<Integer> one, LinkedList<Integer> two) {
     boolean result = false;
 
-    if (one == null || two == null) {
-       result; 
+    if (one == null || two == null || two.size() == 0) {
+       return result; 
     }
 
-    int limit = two.size();
-    int pointer = 0;
+    Iterator<Integer> iter = two.iterator();
+    int compare;
 
     for (int current : one){
-       
+
+      if (iter.hasNext()){
+        compare = iter.next();
+      } else {
+        result = true;
+        break;
+      }
+
+      if (current != compare){
+        iter = two.iterator();
+      }
+     
+    }
+
+    if (!iter.hasNext()){
+      result = true;
     }
 		
 		return result;

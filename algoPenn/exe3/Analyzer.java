@@ -5,9 +5,11 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import java.nio.file.*;
 import java.util.stream.*;
+import java.lang.*;
 
 
 /*
@@ -36,8 +38,6 @@ public class Analyzer {
     try (Stream<String> stream = Files.lines(file)) {
       
       stream.forEach( line -> {
-
-        System.out.println(line);
 
         if (wellFormatted(line)){
           Sentence sentence = toSentence(line);
@@ -88,11 +88,19 @@ public class Analyzer {
 	 * Implement this method in Part 2
 	 */
 	public static Set<Word> allWords(List<Sentence> sentences) {
-    HashSet<Word> result = new HashSet<Word>();
 	
     if (sentences == null || sentences.isEmpty()){
-      return result;
+      return new  HashSet<Word>();
     }
+
+    HashMap<String, Word> count = getWords(sentences);
+    Set<Word> result = toSet(count);  
+
+		return result; 
+	}
+
+  private static HashMap<String, Word> getWords(List<Sentence> sentences){
+    HashMap<String,Word> count = new HashMap<String, Word>(); 
 
     for (Sentence s : sentences){
       if (s != null){
@@ -102,16 +110,50 @@ public class Analyzer {
         for (String t : words){
           String token = t.toLowerCase();
 
-          if (result.contains(token)){
-            Word w = result.remove(token);
-            w.increaseTotal(score);
-          }else {
-            Word newWord = new Word(token);
-            newWord.increaseTotal(score);
-            result.add(newWord);
+          if (validWord(token)) {
+            if (count.containsKey(token)){
+              Word w = count.get(token);
+              w.increaseTotal(score);
+            }else {
+              Word newWord = new Word(token);
+              newWord.increaseTotal(score);
+              count.put(token, newWord);
+            }
           }
         }
-        
+      }
+    }
+
+    return count;
+  }
+
+  private static boolean validWord(String input){
+    return Character.isAlphabetic(input.charAt(0));
+  }
+
+  private static Set<Word> toSet(HashMap<String, Word> input){
+    HashSet<Word> result = new HashSet<Word>();
+
+    for (Map.Entry<String, Word> entry : input.entrySet()){
+      result.add(entry.getValue());
+    }
+
+    return result;
+  }
+	
+	/*
+	 * Implement this method in Part 3
+	 */
+	public static Map<String, Double> calculateScores(Set<Word> words) {
+    HashMap<String, Double> result  = new HashMap<String, Double>();
+	
+    if (words == null || words.isEmpty()){
+      return result;
+    }
+
+    for (Word w : words){
+      if (w != null){
+        result.put(w.getText(), w.calculateScore());
       }
     }
 
@@ -119,26 +161,40 @@ public class Analyzer {
 	}
 	
 	/*
-	 * Implement this method in Part 3
-	 */
-	public static Map<String, Double> calculateScores(Set<Word> words) {
-
-		/* IMPLEMENT THIS METHOD! */
-		
-		return null; // this line is here only so this code will compile if you don't modify it
-
-	}
-	
-	/*
 	 * Implement this method in Part 4
 	 */
 	public static double calculateSentenceScore(Map<String, Double> wordScores, String sentence) {
+	    double total = 0;
+      int count = 0;
+      double score = 0;
 
-		/* IMPLEMENT THIS METHOD! */
-		
-		return 0; // this line is here only so this code will compile if you don't modify it
+      if (wordScores == null || wordScores.isEmpty() ||
+        sentence == null || sentence.isEmpty() ){
+        return total;
+      }
 
-	}
+      String[] words = sentence.split(" ");
+
+      for (String w : words){
+        String word = w.toLowerCase();
+     
+        if (validWord(word)){
+          if (wordScores.containsKey(word)){
+            score = wordScores.get(word);
+            total += score;
+          }
+
+          count++;
+        } 
+        
+      }
+
+      if (count == 0){
+        return 0;
+      }
+
+		  return total / count; 
+	  }
 	
 	/*
 	 * This method is here to help you run your program. Y

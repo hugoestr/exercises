@@ -117,48 +117,139 @@ public class BinarySearchTree<E extends Comparable<E>> {
 	
 	// Method #1.
 	public Node findNode(E val) {
+    if (val == null){
+      return null;
+    }
 
-		/* IMPLEMENT THIS METHOD! */
-		
-		return null; // this line is here only so this code will compile if you don't modify it
-
+		return findNode(root, val); 
 	}
+
+  private Node findNode(Node current, E val){
+    // we have reached the end of a branch
+    if (current == null){
+      return null;
+    }
+
+    // we have found the value
+    if (current.value.compareTo(val) == 0){
+      return current;
+    }
+
+    // traverse the tree
+    if (current.value.compareTo(val) > 0){
+      return findNode(current.leftChild, val);
+    } else {
+      return findNode(current.rightChild, val);
+    }
+  }
 	
 	// Method #2.
 	protected int depth(E val) {
+    if (val == null){
+      return -1;
+    }
 
-		/* IMPLEMENT THIS METHOD! */
-		
-		return -2; // this line is here only so this code will compile if you don't modify it
-
+		return findDepth(root, val, 0); 
 	}
+
+  private int findDepth(Node current, E val, int depth){
+    if (current == null){
+      return -1;
+    }
+
+    if (current.value.compareTo(val) == 0){
+      return depth;
+    }
+
+    if (current.value.compareTo(val) > 0){
+      return findDepth(current.leftChild, val, depth + 1);
+    } else {
+      return findDepth(current.rightChild, val, depth + 1);
+    }
+  }
 	
 	// Method #3.
 	protected int height(E val) {
-
-		/* IMPLEMENT THIS METHOD! */
-		
-		return -2; // this line is here only so this code will compile if you don't modify it
-
+    if (val == null){
+      return -1;
+    }
+	  	
+		return findHeight(root, val); 
 	}
+
+  private int findHeight(Node current, E val){
+    if (current == null){
+      return -1;
+    }
+
+    if (current.value.compareTo(val) == 0){
+      return countToNull(current, -1);
+    }
+  
+    if (current.value.compareTo(val) > 0){
+      return findHeight(current.leftChild, val);
+    } else {
+      return findHeight(current.rightChild, val);
+    }
+  } 
+
+  private int countToNull(Node current, int height){
+    if (current == null){
+      return height;
+    }
+
+    int left = countToNull(current.leftChild, height + 1);
+    int right = countToNull(current.rightChild, height + 1);
+
+    if (left > 0){
+      return left;
+    } else {
+      return right;
+    }
+
+  }
 
 
 	// Method #4.
 	protected boolean isBalanced(Node n) {
+    if (n == null || !contains(n.value)){
+      return false;
+    }
 
-		/* IMPLEMENT THIS METHOD! */
-		
-		return true; // this line is here only so this code will compile if you don't modify it
+    int left = countToNull(n.leftChild, -1);
+    int right = countToNull(n.rightChild, -1);
 
+    int difference = java.lang.Math.abs(left - right);
+
+    if (difference == 0 ||
+        difference == 1) {
+      return true;
+    }
+
+		return false; 
 	}
 	
 	// Method #5. .
 	public boolean isBalanced() {
-
-		/* IMPLEMENT THIS METHOD! */
-		
-		return false; // this line is here only so this code will compile if you don't modify it
-
+		return checkBalance(root); 
 	}
+
+  private boolean checkBalance(Node current){
+    if (current == null){
+      return true;
+    }
+
+    if (checkBalance(current.leftChild)){
+      if (isBalanced(current)){
+        return checkBalance(current.rightChild);
+
+      }else  { 
+        return false;
+      }
+    } else {
+      return false;
+    }
+
+  }
 
 }

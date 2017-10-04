@@ -51,27 +51,27 @@ defmodule CodeWriter do
 
   defp translate({:c_arithmetic, :add}) do
     emit do
-      bin_func_setup
+      bin_func_setup()
       a "R13"
       c "D=D+M"
-      push
+      push()
     end 
   end
 
   defp translate({:c_arithmetic, eq}) do
     emit do
-      bin_func_setup 
+      bin_func_setup()
       a "R13"
       c "D=D-M"
       a "True"
       c "D;JEQ", "//If then setup"
       load "0"
-      push
+      push()
       a "End"
       c "0;JMP"
       c "(True)"
       load "1"
-      push
+      push()
       c "(End)"
     end
   end
@@ -80,8 +80,8 @@ defmodule CodeWriter do
     IO.puts "into push constant"
     emit do
       load number 
-      push
-      sp_inc
+      push()
+      sp_inc()
     end
   end
 

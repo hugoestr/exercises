@@ -25,7 +25,7 @@ defmodule AsmDsl do
 
   def stow(register \\ "R13") do
     emit do
-      pop
+      pop()
       a register, "//Save in register #{register} value of register D"
       c "M=D"
     end
@@ -33,10 +33,10 @@ defmodule AsmDsl do
 
   def bin_func_setup() do
     emit do
-      sp_dec
-      stow
-      sp_dec
-      pop
+      sp_dec()
+      stow()
+      sp_dec()
+      pop()
     end
   end
 

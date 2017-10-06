@@ -201,7 +201,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
     int left = countToNull(current.leftChild, height + 1);
     int right = countToNull(current.rightChild, height + 1);
 
-    if (left > 0){
+    if (left > right){
       return left;
     } else {
       return right;
@@ -216,8 +216,8 @@ public class BinarySearchTree<E extends Comparable<E>> {
       return false;
     }
 
-    int left = countToNull(n.leftChild, -1);
-    int right = countToNull(n.rightChild, -1);
+    int left = countToNull(n.leftChild, 0);
+    int right = countToNull(n.rightChild, 0);
 
     int difference = java.lang.Math.abs(left - right);
 
